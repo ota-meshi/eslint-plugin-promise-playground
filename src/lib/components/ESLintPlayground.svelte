@@ -6,7 +6,14 @@
 	const linter = createLinter();
 
 	const DEFAULT_CODE = `/* Welcome to eslint-plugin-promise */
-const a = new Promise();
+
+const something = new Promise((r) => {
+	r(42)
+});
+
+something.then((val) => {
+	return Promise.resolve(val * 2)
+});
 `;
 
 	const state = deserializeState(
