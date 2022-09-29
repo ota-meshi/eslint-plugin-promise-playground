@@ -55,7 +55,7 @@
 	},
 	"dependencies": {
 		"assert": "^2.0.0",
-		"eslint": "~8.16.0",
+		"eslint": "~8.24.0",
 		"eslint-plugin-promise": "~6.0.1"
 	}
 }
