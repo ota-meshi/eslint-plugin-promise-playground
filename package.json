@@ -1,0 +1,61 @@
+{
+	"name": "eslint-plugin-promise-playground",
+	"version": "1.0.0",
+	"description": "eslint-plugin-promise Online Playground",
+	"type": "module",
+	"main": "index.js",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"preview": "vite preview",
+		"open-site": "npx http-server ./build",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "prettier --plugin-search-dir . --check . && eslint .",
+		"format": "prettier --plugin-search-dir . --write . && eslint . --fix"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/ota-meshi/eslint-plugin-promise-playground.git"
+	},
+	"author": "Yosuke Ota (https://github.com/ota-meshi)",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/ota-meshi/eslint-plugin-promise-playground/issues"
+	},
+	"homepage": "https://github.com/ota-meshi/eslint-plugin-promise-playground#readme",
+	"devDependencies": {
+		"@fontsource/fira-mono": "^4.5.0",
+		"@neoconfetti/svelte": "^1.0.0",
+		"@ota-meshi/eslint-plugin": "^0.12.0",
+		"@sveltejs/adapter-auto": "next",
+		"@sveltejs/kit": "next",
+		"@types/cookie": "^0.5.1",
+		"@types/eslint": "^8.4.6",
+		"@typescript-eslint/eslint-plugin": "^5.27.0",
+		"@typescript-eslint/parser": "^5.27.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-json-schema-validator": "^4.0.2",
+		"eslint-plugin-jsonc": "^2.4.0",
+		"eslint-plugin-markdown": "^3.0.0",
+		"eslint-plugin-node-dependencies": "^0.9.1",
+		"eslint-plugin-prettier": "^4.2.1",
+		"eslint-plugin-svelte": "^2.0.0",
+		"eslint-plugin-yml": "^1.2.0",
+		"monaco-editor": "^0.34.0",
+		"prettier": "^2.6.2",
+		"prettier-plugin-svelte": "^2.7.0",
+		"svelte": "^3.46.0",
+		"svelte-adapter-ghpages": "^0.0.2",
+		"svelte-check": "^2.7.1",
+		"svelte-preprocess": "^4.10.6",
+		"tslib": "^2.3.1",
+		"typescript": "^4.7.4",
+		"vite": "^3.1.0"
+	},
+	"dependencies": {
+		"assert": "^2.0.0",
+		"eslint": "~8.16.0",
+		"eslint-plugin-promise": "~6.0.1"
+	}
+}
