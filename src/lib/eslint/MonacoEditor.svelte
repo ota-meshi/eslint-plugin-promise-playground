@@ -97,7 +97,7 @@
 	$: {
 		disposeCodeActionProvider();
 		if (provideCodeActions) {
-			loadingMonaco.then((monaco) => {
+			void loadingMonaco.then((monaco) => {
 				codeActionProviderDisposable = monaco.languages.registerCodeActionProvider(language, {
 					provideCodeActions(model, ...args) {
 						const editor = getLeftEditor?.();
@@ -119,7 +119,7 @@
 	let started = false;
 	$: if (started) {
 		destroy();
-		setup(diffEditor);
+		void setup(diffEditor);
 	}
 
 	async function setup(diffEditor: boolean) {
@@ -172,10 +172,10 @@
 				}
 			};
 			setLeftMarkers = (markers) => {
-				updateMarkers(leftEditor, markers);
+				void updateMarkers(leftEditor, markers);
 			};
 			setRightMarkers = (markers) => {
-				updateMarkers(rightEditor, markers);
+				void updateMarkers(rightEditor, markers);
 			};
 			getLeftEditor = () => leftEditor;
 
@@ -203,7 +203,7 @@
 				/* noop */
 			};
 			setLeftMarkers = (markers) => {
-				updateMarkers(codeEditor, markers);
+				void updateMarkers(codeEditor, markers);
 			};
 			setRightMarkers = () => {
 				/* noop */
@@ -228,7 +228,7 @@
 		destroy();
 	});
 
-	export function setCursorPosition(loc: SourceLocation) {
+	export function setCursorPosition(loc: SourceLocation): void {
 		if (editor) {
 			const leftEditor = diffEditor
 				? (editor as MEditor.IStandaloneDiffEditor)?.getOriginalEditor()

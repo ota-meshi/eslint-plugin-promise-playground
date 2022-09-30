@@ -7,7 +7,8 @@ module.exports = {
 	},
 	parserOptions: {
 		sourceType: 'module',
-		ecmaVersion: 'latest'
+		ecmaVersion: 'latest',
+		extraFileExtensions: ['.svelte']
 	},
 	extends: [
 		'eslint:recommended',
@@ -20,13 +21,18 @@ module.exports = {
 		'plugin:@ota-meshi/+prettier'
 	],
 	rules: {
-		'require-jsdoc': 'off'
+		'require-jsdoc': 'off',
+		'no-void': ['error', { allowAsStatement: true }]
 	},
 	overrides: [
 		{
 			files: ['*.svelte'],
 			plugins: ['@typescript-eslint'],
-			extends: ['plugin:@typescript-eslint/recommended', 'plugin:@ota-meshi/+typescript'],
+			extends: [
+				'plugin:@typescript-eslint/recommended',
+				'plugin:@ota-meshi/+typescript',
+				'plugin:@ota-meshi/+svelte-with-ts'
+			],
 			parser: 'svelte-eslint-parser',
 			parserOptions: {
 				parser: '@typescript-eslint/parser'

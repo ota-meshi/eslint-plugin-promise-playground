@@ -11,7 +11,7 @@
 
 	export let linter: MaybePromise<Linter> | null = null;
 	export let code = '';
-	export let config: Linter.Config<Linter.RulesRecord> = {};
+	export let config: Linter.Config = {};
 	export let options: Linter.LintOptions = {};
 	export let fix = true;
 	export let showDiff = true;
@@ -24,7 +24,7 @@
 	let messageMap = new Map();
 	let editor: MonacoEditor | null = null;
 
-	export function setCursorPosition(loc: SourceLocation) {
+	export function setCursorPosition(loc: SourceLocation): void {
 		if (editor) {
 			editor.setCursorPosition(loc);
 		}
@@ -32,11 +32,11 @@
 
 	$: showApplyFix = fix && fixedValue !== code;
 	$: {
-		lint(linter, code, config, options);
+		void lint(linter, code, config, options);
 	}
 
 	onMount(() => {
-		lint(linter, code, config, options);
+		void lint(linter, code, config, options);
 	});
 
 	let lastResult: {
@@ -47,7 +47,7 @@
 	async function lint(
 		linter: MaybePromise<Linter> | null,
 		code: MaybePromise<string>,
-		config: Linter.Config<Linter.RulesRecord>,
+		config: Linter.Config,
 		options: Linter.LintOptions
 	) {
 		messageMap.clear();
