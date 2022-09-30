@@ -7,8 +7,7 @@ module.exports = {
 	},
 	parserOptions: {
 		sourceType: 'module',
-		ecmaVersion: 'latest',
-		extraFileExtensions: ['.svelte']
+		ecmaVersion: 'latest'
 	},
 	extends: [
 		'eslint:recommended',
@@ -21,8 +20,7 @@ module.exports = {
 		'plugin:@ota-meshi/+prettier'
 	],
 	rules: {
-		'require-jsdoc': 'off',
-		'no-void': ['error', { allowAsStatement: true }]
+		'require-jsdoc': 'off'
 	},
 	overrides: [
 		{
@@ -40,8 +38,7 @@ module.exports = {
 			rules: {
 				'no-shadow': 'off',
 				'@typescript-eslint/no-non-null-assertion': 'off',
-				'@typescript-eslint/no-explicit-any': 'off',
-				'@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }]
+				'@typescript-eslint/no-explicit-any': 'off'
 			}
 		},
 		{
