@@ -1,15 +1,17 @@
+import type { RulesConfig } from '../types';
+
 /**
  * Get only enabled rules to make the serialized data smaller.
- * @param {object} allRules The rule settings.
- * @returns {object} The rule settings for the enabled rules.
+ * @param allRules The rule settings.
+ * @returns The rule settings for the enabled rules.
  */
-function getEnabledRules(allRules: Record<string, 'error' | 'off' | undefined>) {
+function getEnabledRules(allRules: RulesConfig) {
 	return Object.keys(allRules).reduce((map, id) => {
 		if (allRules[id] === 'error') {
 			map[id] = 2;
 		}
 		return map;
-	}, {} as Record<string, 2>);
+	}, {} as RulesConfig);
 }
 
 /**
@@ -17,10 +19,7 @@ function getEnabledRules(allRules: Record<string, 'error' | 'off' | undefined>) 
  * @param {State} state The state to serialize.
  * @returns {string} The serialized string.
  */
-export function serializeState(state: {
-	code: string;
-	rules: Record<string, 'error' | 'off' | undefined>;
-}): string {
+export function serializeState(state: { code?: string; rules?: RulesConfig }): string {
 	const saveData = {
 		code: state.code,
 		rules: state.rules ? getEnabledRules(state.rules) : undefined

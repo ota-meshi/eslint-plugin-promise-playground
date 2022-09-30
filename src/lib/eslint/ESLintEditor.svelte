@@ -1,30 +1,30 @@
 <script lang="ts">
 	import type { Linter } from 'eslint';
 	import MonacoEditor from './MonacoEditor.svelte';
+	import type { ProvideCodeActions, SourceLocation } from './MonacoEditor.svelte';
 	import { loadMonacoEditor, type Monaco } from './scripts/monaco-loader';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import type { editor as MEditor, languages } from 'monaco-editor';
+	import type { MaybePromise } from './scripts/types';
 
 	const dispatch = createEventDispatcher();
 
-	type MaybePromise<T> = T | Promise<T>;
-
 	export let linter: MaybePromise<Linter> | null = null;
-	export let code: MaybePromise<string> = '';
-	export let config = {};
-	export let options = {};
+	export let code = '';
+	export let config: Linter.Config<Linter.RulesRecord> = {};
+	export let options: Linter.LintOptions = {};
 	export let fix = true;
 	export let showDiff = true;
 	export let language = 'javascript';
 
 	let fixedValue = code;
-	let leftMarkers = [];
-	let rightMarkers = [];
+	let leftMarkers: MEditor.IMarkerData[] = [];
+	let rightMarkers: MEditor.IMarkerData[] = [];
 
 	let messageMap = new Map();
-	let editor;
+	let editor: MonacoEditor | null = null;
 
-	export function setCursorPosition(loc) {
+	export function setCursorPosition(loc: SourceLocation) {
 		if (editor) {
 			editor.setCursorPosition(loc);
 		}
@@ -39,13 +39,16 @@
 		lint(linter, code, config, options);
 	});
 
-	let lastResult = {};
+	let lastResult: {
+		messages?: Linter.LintMessage[];
+		fixResult?: Linter.FixReport;
+	} = {};
 
 	async function lint(
 		linter: MaybePromise<Linter> | null,
 		code: MaybePromise<string>,
-		config,
-		options
+		config: Linter.Config<Linter.RulesRecord>,
+		options: Linter.LintOptions
 	) {
 		messageMap.clear();
 		/* eslint-disable no-param-reassign -- ignore */
@@ -54,8 +57,8 @@
 			return;
 		}
 		code = await code;
-		config = await config;
-		options = await options;
+		// config = await config;
+		// options = await options;
 		/* eslint-enable no-param-reassign -- ignore */
 
 		const start = Date.now();
@@ -110,7 +113,11 @@
 		const endLineNumber = ensurePositiveInt(message.endLine, startLineNumber);
 		const endColumn = ensurePositiveInt(message.endColumn, startColumn + 1);
 		const markerCode = docUrl
-			? { value: message.ruleId!, target: docUrl as any }
+			? {
+					value: message.ruleId!,
+					// Type bug in monaco-editor?
+					target: docUrl as any
+			  }
 			: message.ruleId || 'FATAL';
 		const marker: MEditor.IMarkerData = {
 			code: markerCode,
@@ -130,15 +137,20 @@
 
 	/**
 	 * Ensure that a given value is a positive value.
-	 * @param {number|undefined} value The value to check.
-	 * @param {number} defaultValue The default value which is used if the `value` is undefined.
-	 * @returns {number} The positive value as the result.
+	 * @param value The value to check.
+	 * @param defaultValue The default value which is used if the `value` is undefined.
+	 * @returns The positive value as the result.
 	 */
 	function ensurePositiveInt(value: number | undefined, defaultValue: number) {
 		return Math.max(1, (value !== undefined ? value : defaultValue) | 0);
 	}
 
-	function provideCodeActions(model, _range, context) {
+	// eslint-disable-next-line func-style -- typescript
+	const provideCodeActions: ProvideCodeActions = function provideCodeActions(
+		model,
+		_range,
+		context
+	) {
 		if (context.only !== 'quickfix') {
 			return {
 				actions: [],
@@ -179,7 +191,7 @@
 				/* nop */
 			}
 		};
-	}
+	};
 
 	/**
 	 * Computes the key string from the given marker.
@@ -193,11 +205,6 @@
 	}
 	/**
 	 * Create quickfix code action.
-	 * @param {string} title title
-	 * @param {import('monaco-editor').editor.IMarkerData} marker marker
-	 * @param {import('monaco-editor').editor.ITextModel} model model
-	 * @param { { range: [number, number], text: string } } fix fix data
-	 * @returns {import('monaco-editor').languages.CodeAction} CodeAction
 	 */
 	function createQuickfixCodeAction(
 		title: string,
@@ -207,9 +214,6 @@
 	): languages.CodeAction {
 		const start = model.getPositionAt(fixObject.range[0]);
 		const end = model.getPositionAt(fixObject.range[1]);
-		/**
-		 * @type {import('monaco-editor').IRange}
-		 */
 		const editRange = {
 			startLineNumber: start.lineNumber,
 			startColumn: start.column,
@@ -224,11 +228,12 @@
 				edits: [
 					{
 						resource: model.uri,
-						edit: {
+						textEdit: {
 							range: editRange,
 							text: fixObject.text
-						}
-					} as any
+						},
+						versionId: model.getVersionId()
+					}
 				]
 			}
 		};

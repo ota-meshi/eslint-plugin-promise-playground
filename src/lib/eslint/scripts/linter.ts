@@ -1,11 +1,18 @@
 import { Linter } from 'eslint';
 // @ts-expect-error -- Demo
 import plugin from 'eslint-plugin-promise';
+import type { RulesConfig } from './types';
 export type Category = {
 	type?: string;
 	title: string;
 	classes: string;
-	rules: any[];
+	rules: RuleData[];
+};
+export type RuleData = {
+	ruleId: string;
+	rule?: any;
+	classes?: string;
+	url: string;
 };
 export const categories: Category[] = [
 	{
@@ -32,7 +39,7 @@ export const categories: Category[] = [
 		rules: []
 	}
 ];
-export const DEFAULT_RULES_CONFIG: Record<string, 'error'> = {};
+export const DEFAULT_RULES_CONFIG: RulesConfig = {};
 
 const rules = [];
 for (const ruleName in plugin.rules) {
@@ -41,7 +48,7 @@ for (const ruleName in plugin.rules) {
 	if (rule.meta.deprecated) {
 		continue;
 	}
-	const data = {
+	const data: RuleData = {
 		ruleId,
 		rule,
 		classes: 'svelte-rule',
@@ -58,11 +65,11 @@ for (const [ruleId, rule] of new Linter().getRules()) {
 	if (rule.meta!.deprecated) {
 		continue;
 	}
-	const data = {
+	const data: RuleData = {
 		ruleId,
 		rule,
 		classes: 'core-rule',
-		url: rule.meta!.docs!.url
+		url: rule.meta!.docs!.url!
 	};
 	rules.push(data);
 	const type = rule.meta!.type;
@@ -74,7 +81,13 @@ for (const [ruleId, rule] of new Linter().getRules()) {
 }
 
 /** Get rule data */
-export function getRule(ruleId: string): any {
+export function getRule(ruleId: string | null): RuleData {
+	if (ruleId == null) {
+		return {
+			ruleId: '',
+			url: ''
+		};
+	}
 	for (const cat of categories) {
 		for (const rule of cat.rules) {
 			if (rule.ruleId === ruleId) {
@@ -82,7 +95,7 @@ export function getRule(ruleId: string): any {
 			}
 		}
 	}
-	return {};
+	return { ruleId, url: '' };
 }
 
 export function createLinter(): Linter {

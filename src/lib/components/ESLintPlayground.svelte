@@ -1,8 +1,10 @@
 <script lang="ts">
+	import type { Linter } from 'eslint';
 	import ESLintEditor from '../eslint/ESLintEditor.svelte';
 	import RulesSettings from '../eslint/RulesSettings.svelte';
 	import { deserializeState, serializeState } from '../eslint/scripts/state';
 	import { DEFAULT_RULES_CONFIG, getRule, createLinter } from '../eslint/scripts/linter.js';
+	import type { RulesConfig } from '../eslint/scripts/types';
 	const linter = createLinter();
 
 	const DEFAULT_CODE = `/* Welcome to eslint-plugin-promise */
@@ -21,12 +23,12 @@ something.then((val) => {
 	);
 	let code = state.code || DEFAULT_CODE;
 	let rules = state.rules || Object.assign({}, DEFAULT_RULES_CONFIG);
-	let messages = [];
+	let messages: Linter.LintMessage[] = [];
 	let time = '';
 	let options = {
 		filename: 'example.svelte'
 	};
-	let editor;
+	let editor: ESLintEditor | null = null;
 
 	$: serializedString = (() => {
 		const serializeCode = DEFAULT_CODE === code ? undefined : code;
@@ -41,7 +43,7 @@ something.then((val) => {
 			window.location.replace(`#${serializedString}`);
 		}
 	}
-	function onLintedResult(evt) {
+	function onLintedResult(evt: CustomEvent) {
 		messages = evt.detail.messages;
 		time = `${evt.detail.time}ms`;
 	}
@@ -56,7 +58,7 @@ something.then((val) => {
 	}
 
 	/** */
-	function equalsRules(a, b) {
+	function equalsRules(a: RulesConfig, b: RulesConfig) {
 		const akeys = Object.keys(a).filter((k) => a[k] !== 'off');
 		const bkeys = Object.keys(b).filter((k) => b[k] !== 'off');
 		if (akeys.length !== bkeys.length) {
@@ -71,7 +73,7 @@ something.then((val) => {
 		return true;
 	}
 
-	function onClickMessage(evt, msg) {
+	function onClickMessage(evt: MouseEvent, msg: Linter.LintMessage) {
 		evt.stopPropagation();
 		evt.preventDefault();
 		if (editor) {
@@ -125,13 +127,17 @@ something.then((val) => {
 								>[{msg.line}:{msg.column}]</a
 							>:
 							{msg.message}
-							<a
-								class="rule-link {getRule(msg.ruleId)?.classes}"
-								class:is-rule-error={msg.ruleId}
-								href={getRule(msg.ruleId)?.url}
-								target="_blank"
-								rel="noopener noreferrer">({msg.ruleId})</a
-							>
+							{#if msg.ruleId}
+								{@const ruleData = getRule(msg.ruleId)}
+								<svelte:element
+									this={ruleData.url ? 'a' : 'span'}
+									class="rule-link {ruleData.classes}"
+									class:is-rule-error={msg.ruleId}
+									href={ruleData.url}
+									target="_blank"
+									rel="noopener noreferrer">({msg.ruleId})</svelte:element
+								>
+							{/if}
 						</li>
 					{/each}
 				</ol>
