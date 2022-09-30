@@ -57,9 +57,14 @@ for (const ruleName in plugin.rules) {
 	rules.push(data);
 	categories.find((c) => c.title === 'eslint-plugin-promise')!.rules.push(data);
 
-	// if (rule.meta.docs.recommended) {
-	DEFAULT_RULES_CONFIG[ruleId] = 'error';
-	// }
+	let s = plugin.configs.recommended.rules[ruleId];
+	if (Array.isArray(s)) {
+		s = s[0];
+	}
+	s = s === 2 ? 'error' : s === 1 ? 'warn' : s === 0 ? 'off' : s;
+	if (s === 'error' || s === 'warn') {
+		DEFAULT_RULES_CONFIG[ruleId] = 'error';
+	}
 }
 for (const [ruleId, rule] of new Linter().getRules()) {
 	if (rule.meta!.deprecated) {
