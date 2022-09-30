@@ -22,9 +22,8 @@ export function deserializeState(serializedString: string): {
 	}
 
 	try {
-		const compressedString = window.atob(serializedString);
-		const uint8Arr = Uint8Array.from(compressedString, (c) => c.charCodeAt(0));
-
+		const safeJsonString = window.atob(serializedString);
+		const uint8Arr = Uint8Array.from(safeJsonString, (c) => c.charCodeAt(0));
 		const jsonText = new TextDecoder().decode(uint8Arr);
 		const json = JSON.parse(jsonText);
 
