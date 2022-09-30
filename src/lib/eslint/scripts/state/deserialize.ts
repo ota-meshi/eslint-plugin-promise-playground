@@ -1,3 +1,5 @@
+import type { RulesConfig } from '../types';
+
 /**
  * Deserialize a given serialized string then update this object.
  * @param {string} serializedString A serialized string.
@@ -5,11 +7,11 @@
  */
 export function deserializeState(serializedString: string): {
 	code?: string;
-	rules?: Record<string, 'error' | 'off' | undefined>;
+	rules?: RulesConfig;
 } {
 	const state: {
 		code?: string;
-		rules?: Record<string, 'error' | 'off' | undefined>;
+		rules?: RulesConfig;
 	} = {
 		code: undefined,
 		rules: undefined

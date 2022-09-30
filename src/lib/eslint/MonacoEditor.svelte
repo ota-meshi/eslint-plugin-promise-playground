@@ -1,31 +1,75 @@
-<script context="module">
+<script lang="ts" context="module">
+	import type {
+		editor as MEditor,
+		languages,
+		Range,
+		CancellationToken,
+		IDisposable
+	} from 'monaco-editor';
+	import type { TransitionConfig } from 'svelte/transition';
+
 	const appStarting = new Promise((resolve) => setTimeout(resolve, 300));
+
+	export type ProvideCodeActions = (
+		model: MEditor.ITextModel,
+		range: Range,
+		context: languages.CodeActionContext,
+		token: CancellationToken
+	) => languages.ProviderResult<languages.CodeActionList>;
+	export type SourceLocation = {
+		start: {
+			line: number;
+			column: number;
+		};
+		end: {
+			line: number;
+			column: number;
+		};
+	};
 </script>
 
-<script>
+<script lang="ts">
 	import { onDestroy, onMount, createEventDispatcher } from 'svelte';
+	import { loadMonacoEditor } from './scripts/monaco-loader';
+	import type { MaybePromise } from './scripts/types';
 
 	const dispatch = createEventDispatcher();
 
-	import { loadMonacoEditor } from './scripts/monaco-loader';
 	export let code = '';
 	export let rightCode = '';
 	export let language = 'javascript';
 	export let readOnly = false;
 	export let diffEditor = false;
-	export let markers = [];
-	export let rightMarkers = [];
-	export let provideCodeActions = null;
+	export let markers: MEditor.IMarkerData[] = [];
+	export let rightMarkers: MEditor.IMarkerData[] = [];
+	export let provideCodeActions: ProvideCodeActions | null = null;
 
-	export let waiting = null;
-	let rootElement,
-		editor,
-		setLeftValue,
-		setRightValue,
-		setLeftMarkers,
-		setRightMarkers,
-		getLeftEditor,
-		codeActionProviderDisposable;
+	export let waiting: MaybePromise<null | void> = null;
+	let rootElement: HTMLDivElement | null = null;
+	let editor: MEditor.IStandaloneDiffEditor | MEditor.IStandaloneCodeEditor | null = null;
+	// eslint-disable-next-line func-style -- variable
+	let setLeftValue: (value: string) => void = () => {
+		// init
+	};
+	// eslint-disable-next-line func-style -- variable
+	let setRightValue: (value: string) => void = () => {
+		// init
+	};
+	// eslint-disable-next-line func-style -- variable
+	let setLeftMarkers: (markers: MEditor.IMarkerData[]) => void = () => {
+		// init
+	};
+	// eslint-disable-next-line func-style -- variable
+	let setRightMarkers: (markers: MEditor.IMarkerData[]) => void = () => {
+		// init
+	};
+	// eslint-disable-next-line func-style -- variable
+	let getLeftEditor: () => MEditor.IStandaloneCodeEditor | null = () => null;
+	let codeActionProviderDisposable: IDisposable = {
+		dispose: () => {
+			// init
+		}
+	};
 	const loadingMonaco = loadMonacoEditor();
 	const starting = appStarting;
 
@@ -55,9 +99,9 @@
 		if (provideCodeActions) {
 			loadingMonaco.then((monaco) => {
 				codeActionProviderDisposable = monaco.languages.registerCodeActionProvider(language, {
-					provideCodeActions(model, range, context) {
+					provideCodeActions(model, ...args) {
 						const editor = getLeftEditor?.();
-						if (editor?.getModel().url !== model.url) {
+						if (editor?.getModel()!.uri !== model.uri) {
 							return {
 								actions: [],
 								dispose() {
@@ -65,7 +109,7 @@
 								}
 							};
 						}
-						return provideCodeActions(model, range, context);
+						return provideCodeActions!(model, ...args);
 					}
 				});
 			});
@@ -78,7 +122,7 @@
 		setup(diffEditor);
 	}
 
-	async function setup(diffEditor) {
+	async function setup(diffEditor: boolean) {
 		await loading;
 		const monaco = await loadingMonaco;
 		const options = {
@@ -94,13 +138,13 @@
 			},
 			renderControlCharacters: true,
 			renderIndentGuides: true,
-			renderValidationDecorations: 'on',
-			renderWhitespace: 'boundary',
+			renderValidationDecorations: 'on' as const,
+			renderWhitespace: 'boundary' as const,
 			scrollBeyondLastLine: false
 		};
 
 		if (diffEditor) {
-			editor = monaco.editor.createDiffEditor(rootElement, {
+			editor = monaco.editor.createDiffEditor(rootElement!, {
 				originalEditable: true,
 				...options
 			});
@@ -138,9 +182,9 @@
 			setLeftMarkers(markers);
 			setRightMarkers(rightMarkers);
 		} else {
-			editor = monaco.editor.create(rootElement, options);
+			const codeEditor = (editor = monaco.editor.create(rootElement!, options));
 			editor.onDidChangeModelContent(() => {
-				const value = editor.getValue();
+				const value = codeEditor.getValue();
 				code = value;
 			});
 			editor.onDidChangeCursorPosition((evt) => {
@@ -150,21 +194,21 @@
 				dispatch('focusEditorText', evt);
 			});
 			setLeftValue = (code) => {
-				const value = editor.getValue();
+				const value = codeEditor.getValue();
 				if (code !== value) {
-					editor.setValue(code);
+					codeEditor.setValue(code);
 				}
 			};
 			setRightValue = () => {
 				/* noop */
 			};
 			setLeftMarkers = (markers) => {
-				updateMarkers(editor, markers);
+				updateMarkers(codeEditor, markers);
 			};
 			setRightMarkers = () => {
 				/* noop */
 			};
-			getLeftEditor = () => editor;
+			getLeftEditor = () => codeEditor;
 
 			setLeftMarkers(markers);
 		}
@@ -184,9 +228,11 @@
 		destroy();
 	});
 
-	export function setCursorPosition(loc) {
+	export function setCursorPosition(loc: SourceLocation) {
 		if (editor) {
-			const leftEditor = diffEditor ? editor?.getOriginalEditor() : editor;
+			const leftEditor = diffEditor
+				? (editor as MEditor.IStandaloneDiffEditor)?.getOriginalEditor()
+				: editor;
 			leftEditor.setSelection({
 				startLineNumber: loc.start.line,
 				startColumn: loc.start.column,
@@ -196,19 +242,21 @@
 			leftEditor.revealLineInCenter(loc.start.line);
 		}
 	}
-	async function updateMarkers(editor, markers) {
+	async function updateMarkers(
+		editor: MEditor.IStandaloneCodeEditor,
+		markers: MEditor.IMarkerData[]
+	) {
 		const monaco = await loadingMonaco;
-		const model = editor.getModel();
+		const model = editor.getModel()!;
 		const id = editor.getId();
 		monaco.editor.setModelMarkers(model, id, JSON.parse(JSON.stringify(markers)));
 	}
 
 	/**
 	 * Dispose.
-	 * @param {any} x The target object.
-	 * @returns {void}
+	 * @param x The target object.
 	 */
-	function dispose(x) {
+	function dispose(x: any) {
 		if (x == null) {
 			return;
 		}
@@ -227,12 +275,10 @@
 	}
 
 	function disposeCodeActionProvider() {
-		if (codeActionProviderDisposable) {
-			codeActionProviderDisposable.dispose();
-		}
+		codeActionProviderDisposable.dispose();
 	}
 
-	function loadingTypewriter(node) {
+	function loadingTypewriter(node: HTMLElement, _opt?: any): TransitionConfig {
 		const text = 'Loading...';
 		const duration = 300;
 

@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { categories, type Category } from './scripts/linter.js';
+	import type { RulesConfig } from './scripts/types.js';
 
-	export let rules = {};
+	export let rules: RulesConfig = {};
 
 	let filterValue = '';
 	let filteredCategories = categories;
@@ -30,9 +31,9 @@
 		})
 	);
 
-	function onCategoryClick(category: Category, e: MouseEvent) {
+	function onCategoryClick(category: Category, e: Event) {
 		const checked = (e.target as HTMLInputElement).checked;
-		const newRules: Record<string, 'error'> = Object.assign({}, rules);
+		const newRules: RulesConfig = Object.assign({}, rules);
 		for (const rule of category.rules) {
 			if (checked) {
 				newRules[rule.ruleId] = 'error';
@@ -42,9 +43,9 @@
 		}
 		rules = newRules;
 	}
-	function onClick(ruleId: string, e: MouseEvent) {
+	function onClick(ruleId: string, e: Event) {
 		const checked = (e.target as HTMLInputElement).checked;
-		const newRules: Record<string, 'error'> = Object.assign({}, rules);
+		const newRules: RulesConfig = Object.assign({}, rules);
 		if (checked) {
 			newRules[ruleId] = 'error';
 		} else {
@@ -52,12 +53,12 @@
 		}
 		rules = newRules;
 	}
-	function isErrorState(rules: Record<string, 'error' | 2>, ruleId: string) {
+	function isErrorState(rules: RulesConfig, ruleId: string) {
 		return rules[ruleId] === 'error' || rules[ruleId] === 2;
 	}
 
-	function onAllClick(e) {
-		const checked = e.target.checked;
+	function onAllClick(e: MouseEvent) {
+		const checked = (e.target as HTMLInputElement).checked;
 		const newRules = Object.assign({}, rules);
 		for (const category of filteredCategories) {
 			for (const rule of category.rules) {
