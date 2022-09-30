@@ -1,15 +1,27 @@
-<script>
+<script lang="ts">
 	import github from '$lib/images/github.svg';
+
+	let packages: Record<string, { homepage: string; name: string; version: string }> = {};
+	if (typeof window !== 'undefined') {
+		// @ts-expect-error -- define by vite
+		packages = window.__DEPS_PKGS__ || {};
+	}
 </script>
 
 <header>
-	<div class="eslint-plugin-promise">
+	<div class="title">
 		<p>
 			<a href="https://github.com/eslint-community/eslint-plugin-promise">
 				eslint-plugin-promise
 			</a>
 			Online Playground
 		</p>
+	</div>
+	<div class="packages-info">
+		{#each Object.keys(packages) as nm}
+			{@const pkg = packages[nm]}
+			<a href={pkg.homepage} target="_blank">{pkg.name}@{pkg.version}</a>
+		{/each}
 	</div>
 
 	<div class="corner">
@@ -23,9 +35,11 @@
 	header {
 		display: flex;
 		justify-content: space-between;
+		align-items: center;
+		padding: 0 12px;
 	}
 
-	.eslint-plugin-promise {
+	.title {
 		display: flex;
 		height: 3em;
 		align-items: center;
@@ -33,14 +47,28 @@
 		letter-spacing: 0.1em;
 		text-decoration: none;
 	}
-	.eslint-plugin-promise p {
-		color: #00000054;
+	.title a {
+		color: var(--color-title-1);
 		font-weight: 700;
-		font-size: 0.8rem;
+		font-size: 1rem;
 	}
-	.eslint-plugin-promise a {
-		color: var(--color-text);
-		transition: color 0.2s linear;
+	.title p {
+		color: var(--color-title-2);
+		font-weight: 700;
+		font-size: 1rem;
+	}
+	.packages-info {
+		padding-left: 16px;
+		margin-left: auto;
+		display: flex;
+		flex-wrap: wrap;
+		font-size: 70%;
+		justify-content: flex-end;
+	}
+
+	.packages-info a {
+		padding: 0 8px;
+		color: #2c3e50;
 	}
 
 	.corner {
@@ -64,5 +92,6 @@
 
 	a:hover {
 		color: var(--color-theme-1);
+		transition: color 0.2s linear;
 	}
 </style>

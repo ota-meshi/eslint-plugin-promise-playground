@@ -254,16 +254,16 @@
 		color: #fff;
 	}
 
-	.svelte-category .category-title {
-		color: #40b3ff;
+	.plugin-category .category-title {
+		color: var(--color-theme-2);
 	}
-	.svelte-category a > svg {
-		color: #40b3ff;
+	.plugin-category a > svg {
+		color: var(--color-theme-2);
 	}
 	.core-category .category-title {
-		color: #8080f2;
+		color: var(--color-theme-eslint);
 	}
 	.core-category a > svg {
-		color: #8080f2;
+		color: var(--color-theme-eslint);
 	}
 </style>

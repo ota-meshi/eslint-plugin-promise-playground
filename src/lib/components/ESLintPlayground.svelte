@@ -152,7 +152,7 @@ something.then((val) => {
 	}
 
 	.playground-root {
-		height: calc(100vh - 130px);
+		height: calc(100vh - 100px);
 	}
 	.playground-tools {
 		height: 24px;
@@ -161,7 +161,7 @@ something.then((val) => {
 	.playground-content {
 		display: flex;
 		flex-wrap: wrap;
-		height: calc(100% - 16px);
+		height: calc(100% - 24px);
 		border: 1px solid #cfd4db;
 		background-color: #282c34;
 		color: #fff;
@@ -191,19 +191,19 @@ something.then((val) => {
 	.rule-link {
 		transition: color 0.2s linear;
 	}
-	.rule-link.svelte-rule {
-		color: #40b3ff80;
+	.rule-link.plugin-rule {
+		color: var(--color-theme-2-alpha);
 	}
-	.rule-link.svelte-rule:hover {
-		color: #40b3ff;
+	.rule-link.plugin-rule:hover {
+		color: var(--color-theme-2);
 	}
 	.rule-link.core-rule {
-		color: #8080f280;
+		color: var(--color-theme-eslint-alpha);
 	}
 	.rule-link.core-rule:hover {
-		color: #8080f2;
+		color: var(--color-theme-eslint);
 	}
 	.message-link {
-		color: #40b3ff;
+		color: var(--color-theme-2);
 	}
 </style>

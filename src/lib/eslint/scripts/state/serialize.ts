@@ -27,9 +27,8 @@ export function serializeState(state: { code?: string; rules?: RulesConfig }): s
 	const jsonString = JSON.stringify(saveData);
 
 	const uint8Arr = new TextEncoder().encode(jsonString);
-	const compressedString = String.fromCharCode(...uint8Arr);
-	const base64 =
-		(typeof window !== 'undefined' && window.btoa(compressedString)) || compressedString;
+	const safeJsonString = String.fromCharCode(...uint8Arr);
+	const base64 = (typeof window !== 'undefined' && window.btoa(safeJsonString)) || safeJsonString;
 
 	// eslint-disable-next-line no-console -- Demo
 	console.log(

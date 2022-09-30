@@ -17,7 +17,7 @@ export type RuleData = {
 export const categories: Category[] = [
 	{
 		title: 'eslint-plugin-promise',
-		classes: 'svelte-category',
+		classes: 'plugin-category',
 		rules: []
 	},
 	{
@@ -51,7 +51,7 @@ for (const ruleName in plugin.rules) {
 	const data: RuleData = {
 		ruleId,
 		rule,
-		classes: 'svelte-rule',
+		classes: 'plugin-rule',
 		url: rule.meta.docs.url
 	};
 	rules.push(data);
