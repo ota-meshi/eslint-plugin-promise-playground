@@ -1,10 +1,12 @@
 <script lang="ts">
+	/* global __DEPS_PKGS__ -- define by vite */
 	import github from '$lib/images/github.svg';
 
 	let packages: Record<string, { homepage: string; name: string; version: string }> = {};
-	if (typeof window !== 'undefined') {
+	// @ts-expect-error -- define by vite
+	if (typeof __DEPS_PKGS__ !== 'undefined') {
 		// @ts-expect-error -- define by vite
-		packages = window.__DEPS_PKGS__ || {};
+		packages = __DEPS_PKGS__ || {};
 	}
 </script>
 
