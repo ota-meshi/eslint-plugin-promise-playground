@@ -28,9 +28,10 @@ jobs:
       - uses: actions/setup-node@v3
       - name: Install And Build
         run: |+
+          npm install github:eslint-community/eslint-plugin-promise
+          rm -rf node_modules
           npm install
           npm run build
-          npm install github:eslint-community/eslint-plugin-promise
       - name: Setup Pages
         uses: actions/configure-pages@v2
       - name: Upload artifact
