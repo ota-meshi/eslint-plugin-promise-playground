@@ -3,9 +3,9 @@
 	import ESLintEditor from '../eslint/ESLintEditor.svelte';
 	import RulesSettings from '../eslint/RulesSettings.svelte';
 	import { deserializeState, serializeState } from '../eslint/scripts/state';
-	import { DEFAULT_RULES_CONFIG, getRule, createLinter } from '../eslint/scripts/linter.js';
+	import { DEFAULT_RULES_CONFIG, getRule, linterStore } from '../eslint/scripts/linter.js';
 	import type { RulesConfig } from '../eslint/scripts/types';
-	const linter = createLinter();
+	$: linter = $linterStore;
 
 	const DEFAULT_CODE = `/* Welcome to eslint-plugin-promise */
 

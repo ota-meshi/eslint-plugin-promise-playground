@@ -1,12 +1,27 @@
 <script lang="ts">
 	/* global __DEPS_PKGS__ -- define by vite */
 	import github from '$lib/images/github.svg';
+	import { setupPlugin } from '../eslint/scripts/linter';
+
+	let pluginVersion = 'dev';
+	const versions = ['dev', '6', '5', '4', '3', '2', '1'];
 
 	let packages: Record<string, { homepage: string; name: string; version: string }> = {};
 	// @ts-expect-error -- define by vite
 	if (typeof __DEPS_PKGS__ !== 'undefined') {
 		// @ts-expect-error -- define by vite
 		packages = __DEPS_PKGS__ || {};
+	}
+
+	$: {
+		if (pluginVersion === 'dev') {
+			setupPlugin();
+		} else {
+			const url = `https://cdn.skypack.dev/eslint-plugin-promise@${pluginVersion}`;
+			void import(/* @vite-ignore */ url).then((module) => {
+				setupPlugin(module);
+			});
+		}
 	}
 </script>
 
@@ -22,7 +37,19 @@
 	<div class="packages-info">
 		{#each Object.keys(packages) as nm}
 			{@const pkg = packages[nm]}
-			<a href={pkg.homepage} target="_blank">{pkg.name}@{pkg.version}</a>
+			{#if nm === 'eslint-plugin-promise'}
+				<div class="package-item">
+					<a href={pkg.homepage} target="_blank">{pkg.name}</a>@<select bind:value={pluginVersion}>
+						{#each versions as v}
+							<option value={v}>
+								{v}
+							</option>
+						{/each}
+					</select>
+				</div>
+			{:else}
+				<a class="package-item" href={pkg.homepage} target="_blank">{pkg.name}@{pkg.version}</a>
+			{/if}
 		{/each}
 	</div>
 
@@ -68,8 +95,12 @@
 		justify-content: flex-end;
 	}
 
-	.packages-info a {
+	.packages-info .package-item {
 		padding: 0 8px;
+		display: flex;
+		align-items: center;
+	}
+	.packages-info a {
 		color: #2c3e50;
 	}
 

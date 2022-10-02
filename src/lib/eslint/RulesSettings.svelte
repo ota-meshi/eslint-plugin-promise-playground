@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { categories, type Category } from './scripts/linter.js';
+	import { categoriesStore, type Category } from './scripts/linter.js';
 	import type { RulesConfig } from './scripts/types.js';
 
 	export let rules: RulesConfig = {};
 
 	let filterValue = '';
-	let filteredCategories = categories;
+	let filteredCategories: Category[] = [];
 	$: {
 		filteredCategories = [];
-		for (const category of categories) {
+		for (const category of $categoriesStore) {
 			let filteredRules = category.rules;
 			if (filterValue) {
 				// eslint-disable-next-line no-loop-func -- ignore
@@ -20,8 +20,19 @@
 			});
 		}
 	}
+	categoriesStore.subscribe((categories) => {
+		const newRules: RulesConfig = {};
+		for (const category of categories) {
+			for (const rule of category.rules) {
+				if (rules[rule.ruleId]) {
+					newRules[rule.ruleId] = rules[rule.ruleId];
+				}
+			}
+		}
+		rules = newRules;
+	});
 	let categoryState = Object.fromEntries(
-		categories.map((c) => {
+		$categoriesStore.map((c) => {
 			return [
 				c.title,
 				{
@@ -102,10 +113,10 @@
 				<li class="category {category.classes}">
 					<button
 						class="category-button"
-						class:category-button--close={categoryState[category.title].close}
+						class:category-button--close={categoryState[category.title]?.close}
 						on:click={() => {
 							categoryState = Object.fromEntries(
-								categories.map((c) => {
+								$categoriesStore.map((c) => {
 									const close = categoryState[c.title].close;
 									return [
 										c.title,
