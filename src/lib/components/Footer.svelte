@@ -1,11 +1,10 @@
 <script>
-	// import logo from '$lib/images/logo.png';
+	import logo from '$lib/images/logo.png';
 </script>
 
 <footer>
-	<a href="https://github.com/eslint-community"
-		>ESLint Community
-		<!-- <img class="logo" src={logo} alt="logo" /> -->
+	<a href="https://github.com/eslint-community">
+		<img class="logo" src={logo} alt="ESLint Community" />
 	</a>
 	<div class="builder">
 		This site was built with <a href="https://kit.svelte.dev">SvelteKit</a>.
@@ -17,12 +16,12 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 12px;
+		padding: 4px 12px;
 	}
 
-	/* .logo {
+	.logo {
 		height: 50px;
-	} */
+	}
 
 	.builder {
 		font-size: 0.8rem;

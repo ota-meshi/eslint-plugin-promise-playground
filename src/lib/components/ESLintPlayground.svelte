@@ -152,7 +152,8 @@ something.then((val) => {
 	}
 
 	.playground-root {
-		height: calc(100vh - 100px);
+		height: calc(100vh - 110px);
+		height: calc(100dvh - 110px);
 	}
 	.playground-tools {
 		height: 24px;

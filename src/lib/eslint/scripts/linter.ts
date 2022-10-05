@@ -59,21 +59,40 @@ for (const [ruleId, rule] of new Linter().getRules()) {
 export let categories: Category[] = [...CORE_CATEGORIES];
 export const categoriesStore = writable(categories);
 export const linterStore = writable(new Linter());
+const pluginCategories: Category[] = [];
 
 setupPlugin(bundlePlugin);
 
-export function setupPlugin(plugin: any = bundlePlugin): void {
-	const pluginCategories: Category[] = [
-		{
-			title: 'eslint-plugin-promise',
+function getNamespace(pluginName: string) {
+	const ns = /^eslint-plugin-(.*)/u.exec(pluginName)?.[1];
+	if (ns) {
+		return ns;
+	}
+	const res = /^(@.*\/)eslint-plugin-(.*)/u.exec(pluginName);
+
+	return res && res[1] + res[2];
+}
+
+export function setupPlugin(
+	plugin: any = bundlePlugin,
+	pluginName = 'eslint-plugin-promise'
+): void {
+	let pluginCategory = pluginCategories.find((c) => c.title === pluginName);
+	if (!pluginCategory) {
+		pluginCategory = {
+			title: pluginName,
 			classes: 'plugin-category',
 			rules: []
-		}
-	];
+		};
+		pluginCategories.push(pluginCategory);
+	}
+	pluginCategory.rules = [];
+
+	const ns = getNamespace(pluginName);
 
 	for (const ruleName in plugin.rules) {
 		const rule = plugin.rules[ruleName];
-		const ruleId = `promise/${ruleName}`;
+		const ruleId = `${ns}/${ruleName}`;
 		if (rule.meta?.deprecated) {
 			continue;
 		}
@@ -83,7 +102,7 @@ export function setupPlugin(plugin: any = bundlePlugin): void {
 			classes: 'plugin-rule',
 			url: rule.meta?.docs?.url
 		};
-		pluginCategories.find((c) => c.title === 'eslint-plugin-promise')!.rules.push(data);
+		pluginCategory.rules.push(data);
 
 		let s = plugin.configs?.recommended?.rules?.[ruleId];
 		if (Array.isArray(s)) {
@@ -92,12 +111,12 @@ export function setupPlugin(plugin: any = bundlePlugin): void {
 		s = s === 2 ? 'error' : s === 1 ? 'warn' : s === 0 ? 'off' : s;
 		if (s === 'error' || s === 'warn') {
 			DEFAULT_RULES_CONFIG[ruleId] = 'error';
+		} else {
+			delete DEFAULT_RULES_CONFIG[ruleId];
 		}
 	}
 
-	for (const pluginCategory of pluginCategories) {
-		pluginCategory.rules.sort((a, b) => a.ruleId.localeCompare(b.ruleId));
-	}
+	pluginCategory.rules.sort((a, b) => a.ruleId.localeCompare(b.ruleId));
 
 	categories = [...pluginCategories, ...CORE_CATEGORIES];
 	categoriesStore.set(categories);
@@ -106,7 +125,7 @@ export function setupPlugin(plugin: any = bundlePlugin): void {
 
 	for (const ruleName in plugin.rules) {
 		const rule = plugin.rules[ruleName];
-		const ruleId = `promise/${ruleName}`;
+		const ruleId = `${ns}/${ruleName}`;
 		linter.defineRule(ruleId, rule);
 	}
 
