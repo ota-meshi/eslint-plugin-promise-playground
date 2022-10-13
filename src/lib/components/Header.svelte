@@ -1,17 +1,27 @@
 <script lang="ts">
-	/* global __DEPS_PKGS__ -- define by vite */
+	/* global __DEPS_PKGS__, __PKG_VERSIONS__ -- define by vite */
 	import github from '$lib/images/github.svg';
 	import { setupPlugin } from '../eslint/scripts/linter';
 
 	let pluginVersion = 'dev';
-	const versions = ['dev', '6', '5', '4', '3', '2', '1'];
 
 	let packages: Record<string, { homepage: string; name: string; version: string }> = {};
+	let packageVersions: Record<string, string[]> = {};
 	// @ts-expect-error -- define by vite
 	if (typeof __DEPS_PKGS__ !== 'undefined') {
 		// @ts-expect-error -- define by vite
 		packages = (__DEPS_PKGS__ || {}) as unknown;
 	}
+	// @ts-expect-error -- define by vite
+	if (typeof __PKG_VERSIONS__ !== 'undefined') {
+		// @ts-expect-error -- define by vite
+		packageVersions = (__PKG_VERSIONS__ || {}) as unknown;
+	}
+
+	$: versions = [
+		'dev',
+		...(packageVersions['eslint-plugin-promise'] || ['6', '5', '4', '3', '2', '1'])
+	];
 
 	$: {
 		if (pluginVersion === 'dev') {

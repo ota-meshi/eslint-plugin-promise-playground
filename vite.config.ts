@@ -3,6 +3,7 @@ import type { UserConfig } from 'vite';
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';
+import packageVersions from 'pkg-versions';
 
 import './src/build-system/build';
 
@@ -17,23 +18,28 @@ function getPkg(moduleName: string) {
 	return { name, homepage, version };
 }
 
-const config: UserConfig = {
-	plugins: [sveltekit()],
-	define: {
-		__DEPS_PKGS__: {
-			'eslint-plugin-promise': getPkg('eslint-plugin-promise'),
-			eslint: getPkg('eslint')
-		}
-	},
-	resolve: {
-		alias: {
-			eslint: path.join(dirname, './src/shim/eslint.mjs'),
+export default (async (): Promise<UserConfig> => {
+	return {
+		plugins: [sveltekit()],
+		define: {
+			__DEPS_PKGS__: {
+				'eslint-plugin-promise': getPkg('eslint-plugin-promise'),
+				eslint: getPkg('eslint')
+			},
+			__PKG_VERSIONS__: {
+				'eslint-plugin-promise': [...(await packageVersions('eslint-plugin-promise'))].sort(
+					(a, b) => b.localeCompare(a)
+				)
+			}
+		},
+		resolve: {
+			alias: {
+				eslint: path.join(dirname, './src/shim/eslint.mjs'),
 
-			// Node
-			assert: path.join(dirname, './src/shim/assert.mjs'),
-			path: path.join(dirname, './src/shim/path.mjs')
+				// Node
+				assert: path.join(dirname, './src/shim/assert.mjs'),
+				path: path.join(dirname, './src/shim/path.mjs')
+			}
 		}
-	}
-};
-
-export default config;
+	};
+})();
