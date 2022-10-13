@@ -10,7 +10,7 @@
 	// @ts-expect-error -- define by vite
 	if (typeof __DEPS_PKGS__ !== 'undefined') {
 		// @ts-expect-error -- define by vite
-		packages = __DEPS_PKGS__ || {};
+		packages = (__DEPS_PKGS__ || {}) as unknown;
 	}
 
 	$: {

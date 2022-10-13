@@ -249,7 +249,11 @@
 		const monaco = await loadingMonaco;
 		const model = editor.getModel()!;
 		const id = editor.getId();
-		monaco.editor.setModelMarkers(model, id, JSON.parse(JSON.stringify(markers)));
+		monaco.editor.setModelMarkers(
+			model,
+			id,
+			JSON.parse(JSON.stringify(markers)) as MEditor.IMarkerData[]
+		);
 	}
 
 	/**
@@ -260,6 +264,7 @@
 		if (x == null) {
 			return;
 		}
+		/* eslint-disable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call -- ignore */
 		if (x.getOriginalEditor) {
 			dispose(x.getOriginalEditor());
 		}
@@ -272,6 +277,7 @@
 		if (x.dispose) {
 			x.dispose();
 		}
+		/* eslint-enable @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call -- ignore */
 	}
 
 	function disposeCodeActionProvider() {

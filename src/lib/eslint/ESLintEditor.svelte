@@ -21,11 +21,12 @@
 	let leftMarkers: MEditor.IMarkerData[] = [];
 	let rightMarkers: MEditor.IMarkerData[] = [];
 
-	let messageMap = new Map();
+	let messageMap = new Map<string, Linter.LintMessage>();
 	let editor: MonacoEditor | null = null;
 
 	export function setCursorPosition(loc: SourceLocation): void {
 		if (editor) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- Linter bug
 			editor.setCursorPosition(loc);
 		}
 	}
@@ -116,6 +117,7 @@
 			? {
 					value: message.ruleId!,
 					// Type bug in monaco-editor?
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- ignore
 					target: docUrl as any
 			  }
 			: message.ruleId || 'FATAL';
@@ -151,6 +153,7 @@
 		_range,
 		context
 	) {
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Linter bug
 		if (context.only !== 'quickfix') {
 			return {
 				actions: [],
@@ -161,14 +164,22 @@
 		}
 
 		const actions = [];
-		for (const marker of context.markers) {
+
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Linter bug
+		for (const marker of context.markers as MEditor.IMarkerData[]) {
 			const message = messageMap.get(computeKey(marker));
-			if (!message) {
+			if (!message || !message.ruleId) {
 				continue;
 			}
 			if (message.fix) {
 				actions.push(
-					createQuickfixCodeAction(`Fix this ${message.ruleId} problem`, marker, model, message.fix)
+					createQuickfixCodeAction(
+						`Fix this ${message.ruleId} problem`,
+						marker,
+						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Linter bug
+						model,
+						message.fix
+					)
 				);
 			}
 			if (message.suggestions) {
@@ -177,6 +188,7 @@
 						createQuickfixCodeAction(
 							`${suggestion.desc} (${message.ruleId})`,
 							marker,
+							// eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Linter bug
 							model,
 							suggestion.fix
 						)

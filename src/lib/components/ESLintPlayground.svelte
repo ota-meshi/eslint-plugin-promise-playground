@@ -43,7 +43,7 @@ something.then((val) => {
 			window.location.replace(`#${serializedString}`);
 		}
 	}
-	function onLintedResult(evt: CustomEvent) {
+	function onLintedResult(evt: CustomEvent<{ messages: Linter.LintMessage[]; time: number }>) {
 		messages = evt.detail.messages;
 		time = `${evt.detail.time}ms`;
 	}
@@ -77,6 +77,7 @@ something.then((val) => {
 		evt.stopPropagation();
 		evt.preventDefault();
 		if (editor) {
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- Linter bug
 			editor.setCursorPosition({
 				start: {
 					line: msg.line,
@@ -120,7 +121,7 @@ something.then((val) => {
 			/>
 			<div class="messages">
 				<ol>
-					{#each messages as msg, i (`${msg.line}:${msg.column}:${msg.ruleId}@${i}`)}
+					{#each messages as msg, i (`${msg.line}:${msg.column}:${msg.ruleId || ''}@${i}`)}
 						<li class="message">
 							<!-- svelte-ignore a11y-invalid-attribute -->
 							<a href="#" on:click={(evt) => onClickMessage(evt, msg)} class="message-link"

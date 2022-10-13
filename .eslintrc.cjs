@@ -28,6 +28,7 @@ module.exports = {
 			plugins: ['@typescript-eslint'],
 			extends: [
 				'plugin:@typescript-eslint/recommended',
+				'plugin:@typescript-eslint/recommended-requiring-type-checking',
 				'plugin:@ota-meshi/+typescript',
 				'plugin:@ota-meshi/+svelte-with-ts'
 			],
