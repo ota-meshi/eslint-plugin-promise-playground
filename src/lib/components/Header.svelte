@@ -49,7 +49,9 @@
 			{@const pkg = packages[nm]}
 			{#if nm === 'eslint-plugin-promise'}
 				<div class="package-item">
-					<a href={pkg.homepage} target="_blank">{pkg.name}</a>@<select bind:value={pluginVersion}>
+					<a href={pkg.homepage} target="_blank" rel="noopener noreferrer">{pkg.name}</a>@<select
+						bind:value={pluginVersion}
+					>
 						{#each versions as v}
 							<option value={v}>
 								{v}
@@ -58,7 +60,9 @@
 					</select>
 				</div>
 			{:else}
-				<a class="package-item" href={pkg.homepage} target="_blank">{pkg.name}@{pkg.version}</a>
+				<a class="package-item" href={pkg.homepage} target="_blank" rel="noopener noreferrer"
+					>{pkg.name}@{pkg.version}</a
+				>
 			{/if}
 		{/each}
 	</div>
