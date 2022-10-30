@@ -34,7 +34,7 @@ module.exports = {
 			],
 			parser: 'svelte-eslint-parser',
 			parserOptions: {
-				parser: '@typescript-eslint/parser'
+				parser: require('typescript-eslint-parser-for-extra-files')
 			},
 			rules: {
 				'no-shadow': 'off',
@@ -46,7 +46,7 @@ module.exports = {
 			files: ['*.ts'],
 			plugins: ['@typescript-eslint'],
 			extends: ['plugin:@typescript-eslint/recommended', 'plugin:@ota-meshi/+typescript'],
-			parser: '@typescript-eslint/parser',
+			parser: 'typescript-eslint-parser-for-extra-files',
 			rules: {
 				'@typescript-eslint/no-non-null-assertion': 'off',
 				'@typescript-eslint/no-explicit-any': 'off'

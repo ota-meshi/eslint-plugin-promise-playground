@@ -26,7 +26,6 @@
 
 	export function setCursorPosition(loc: SourceLocation): void {
 		if (editor) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- Linter bug
 			editor.setCursorPosition(loc);
 		}
 	}
@@ -153,7 +152,6 @@
 		_range,
 		context
 	) {
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Linter bug
 		if (context.only !== 'quickfix') {
 			return {
 				actions: [],
@@ -165,8 +163,7 @@
 
 		const actions = [];
 
-		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- Linter bug
-		for (const marker of context.markers as MEditor.IMarkerData[]) {
+		for (const marker of context.markers) {
 			const message = messageMap.get(computeKey(marker));
 			if (!message || !message.ruleId) {
 				continue;
@@ -176,7 +173,7 @@
 					createQuickfixCodeAction(
 						`Fix this ${message.ruleId} problem`,
 						marker,
-						// eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Linter bug
+
 						model,
 						message.fix
 					)
@@ -188,7 +185,7 @@
 						createQuickfixCodeAction(
 							`${suggestion.desc} (${message.ruleId})`,
 							marker,
-							// eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- Linter bug
+
 							model,
 							suggestion.fix
 						)

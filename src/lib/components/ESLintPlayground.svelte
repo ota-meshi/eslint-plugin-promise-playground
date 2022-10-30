@@ -77,7 +77,6 @@ something.then((val) => {
 		evt.stopPropagation();
 		evt.preventDefault();
 		if (editor) {
-			// eslint-disable-next-line @typescript-eslint/no-unsafe-call -- Linter bug
 			editor.setCursorPosition({
 				start: {
 					line: msg.line,
