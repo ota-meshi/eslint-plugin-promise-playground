@@ -30,7 +30,8 @@ export default (async (): Promise<UserConfig> => {
 				'eslint-plugin-promise': [...(await packageVersions('eslint-plugin-promise'))].sort(
 					(a, b) => b.localeCompare(a)
 				)
-			}
+			},
+			MONACO_EDITOR_VERSION: JSON.stringify(getPkg('monaco-editor').version)
 		},
 		resolve: {
 			alias: {

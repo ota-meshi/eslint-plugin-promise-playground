@@ -1,10 +1,14 @@
 <script lang="ts">
 	import type { Linter } from 'eslint';
-	import MonacoEditor from './MonacoEditor.svelte';
-	import type { ProvideCodeActions, SourceLocation } from './MonacoEditor.svelte';
-	import { loadMonacoEditor, type Monaco } from './scripts/monaco-loader';
+	import MonacoEditor, { type SourceLocation } from '@ota-meshi/site-kit-monaco-editor-svelte';
+	import { loadMonacoEditor } from '@ota-meshi/site-kit-monaco-editor';
+	import type {
+		MonacoEditor as MEditor,
+		ProvideCodeActions,
+		MonacoEditorLanguages,
+		Monaco
+	} from '@ota-meshi/site-kit-monaco-editor';
 	import { createEventDispatcher, onMount } from 'svelte';
-	import type { editor as MEditor, languages } from 'monaco-editor';
 	import type { MaybePromise } from './scripts/types';
 
 	const dispatch = createEventDispatcher();
@@ -220,7 +224,7 @@
 		marker: MEditor.IMarkerData,
 		model: MEditor.ITextModel,
 		fixObject: { range: [number, number]; text: string }
-	): languages.CodeAction {
+	): MonacoEditorLanguages.CodeAction {
 		const start = model.getPositionAt(fixObject.range[0]);
 		const end = model.getPositionAt(fixObject.range[1]);
 		const editRange = {
