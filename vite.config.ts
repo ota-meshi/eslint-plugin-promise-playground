@@ -1,13 +1,8 @@
 import { sveltekit } from '@sveltejs/kit/vite';
 import type { UserConfig } from 'vite';
-import path from 'path';
 import fs from 'fs';
-import { fileURLToPath } from 'url';
 import packageVersions from 'pkg-versions';
-
-import './src/build-system/build';
-
-const dirname = path.dirname(fileURLToPath(import.meta.url));
+import eslint4b from 'vite-plugin-eslint4b';
 
 function getPkg(moduleName: string) {
 	// eslint-disable-next-line no-shadow -- name
@@ -20,7 +15,7 @@ function getPkg(moduleName: string) {
 
 export default (async (): Promise<UserConfig> => {
 	return {
-		plugins: [sveltekit()],
+		plugins: [eslint4b(), sveltekit()],
 		define: {
 			__DEPS_PKGS__: {
 				'eslint-plugin-promise': getPkg('eslint-plugin-promise'),
@@ -32,15 +27,6 @@ export default (async (): Promise<UserConfig> => {
 				)
 			},
 			MONACO_EDITOR_VERSION: JSON.stringify(getPkg('monaco-editor').version)
-		},
-		resolve: {
-			alias: {
-				eslint: path.join(dirname, './src/shim/eslint.mjs'),
-
-				// Node
-				assert: path.join(dirname, './src/shim/assert.mjs'),
-				path: path.join(dirname, './src/shim/path.mjs')
-			}
 		}
 	};
 })();

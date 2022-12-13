@@ -106,7 +106,5 @@ dist
 ## Repo
 /.svelte-kit/**
 !/.svelte-kit/tsconfig.json
-/src/shim/eslint.mjs
-/src/shim/assert.mjs
 /build
 /.vite

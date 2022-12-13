@@ -13,6 +13,4 @@ package-lock.json
 yarn.lock
 
 ## Repo
-/src/shim/eslint.mjs
-/src/shim/assert.mjs
 /.vite
