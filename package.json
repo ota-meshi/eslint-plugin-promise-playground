@@ -25,7 +25,7 @@
 	},
 	"homepage": "https://github.com/ota-meshi/eslint-plugin-promise-playground#readme",
 	"devDependencies": {
-		"@fontsource/fira-mono": "^4.5.0",
+		"@fontsource/fira-mono": "^5.0.0",
 		"@neoconfetti/svelte": "^1.0.0",
 		"@ota-meshi/eslint-plugin": "^0.13.1",
 		"@sveltejs/adapter-auto": "^2.0.0",
