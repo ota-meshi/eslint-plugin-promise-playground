@@ -59,7 +59,7 @@
 	"dependencies": {
 		"@ota-meshi/site-kit-monaco-editor-svelte": "^0.1.0",
 		"assert": "^2.0.0",
-		"eslint": "~8.41.0",
+		"eslint": "~8.42.0",
 		"eslint-plugin-promise": "~6.1.0"
 	}
 }
