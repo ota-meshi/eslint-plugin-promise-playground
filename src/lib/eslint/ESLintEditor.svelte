@@ -122,7 +122,7 @@
 					// Type bug in monaco-editor?
 					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- ignore
 					target: docUrl as any
-			  }
+				}
 			: message.ruleId || 'FATAL';
 		const marker: MEditor.IMarkerData = {
 			code: markerCode,

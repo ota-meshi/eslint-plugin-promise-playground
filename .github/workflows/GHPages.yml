@@ -30,7 +30,7 @@ jobs:
         run: |+
           npm install github:eslint-community/eslint-plugin-promise
           rm -rf node_modules
-          npm install
+          npm install -f
           npm run build
       - name: Setup Pages
         uses: actions/configure-pages@v4
