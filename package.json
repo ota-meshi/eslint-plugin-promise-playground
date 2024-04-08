@@ -55,7 +55,7 @@
 		"tslib": "^2.3.1",
 		"typescript": "^5.0.0",
 		"typescript-eslint-parser-for-extra-files": "^0.6.0",
-		"vite-plugin-eslint4b": "^0.2.0"
+		"vite-plugin-eslint4b": "^0.3.0"
 	},
 	"dependencies": {
 		"@ota-meshi/site-kit-monaco-editor-svelte": "^0.1.0",
