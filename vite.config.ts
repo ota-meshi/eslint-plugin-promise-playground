@@ -5,7 +5,6 @@ import packageVersions from 'pkg-versions';
 import eslint4b from 'vite-plugin-eslint4b';
 
 function getPkg(moduleName: string) {
-	// eslint-disable-next-line no-shadow -- name
 	const { name, homepage, version } = JSON.parse(
 		fs.readFileSync(`./node_modules/${moduleName}/package.json`, 'utf8')
 	);

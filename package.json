@@ -25,17 +25,20 @@
 	},
 	"homepage": "https://github.com/ota-meshi/eslint-plugin-promise-playground#readme",
 	"devDependencies": {
+		"@eslint/js": "^9.6.0",
 		"@fontsource/fira-mono": "^5.0.0",
 		"@neoconfetti/svelte": "^2.0.0",
-		"@ota-meshi/eslint-plugin": "^0.15.0",
+		"@ota-meshi/eslint-plugin": "^0.17.5",
 		"@sveltejs/adapter-auto": "^3.0.0",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^3.0.1",
 		"@types/cookie": "^0.6.0",
 		"@types/eslint": "^8.4.6",
+		"@types/node": "^20.14.9",
 		"@typescript-eslint/eslint-plugin": "^7.0.0",
 		"@typescript-eslint/parser": "^7.0.0",
 		"eslint-config-prettier": "^9.0.0",
+		"eslint-plugin-jsdoc": "^48.5.0",
 		"eslint-plugin-json-schema-validator": "^5.0.0",
 		"eslint-plugin-jsonc": "^2.4.0",
 		"eslint-plugin-markdown": "^5.0.0",
@@ -43,6 +46,7 @@
 		"eslint-plugin-prettier": "^5.0.0",
 		"eslint-plugin-svelte": "^2.0.0",
 		"eslint-plugin-yml": "^1.2.0",
+		"globals": "^15.7.0",
 		"monaco-editor": "^0.50.0",
 		"pkg-versions": "^4.0.0",
 		"prettier": "^3.0.0",
@@ -54,13 +58,14 @@
 		"svelte2tsx": "^0.7.0",
 		"tslib": "^2.3.1",
 		"typescript": "^5.0.0",
+		"typescript-eslint": "^7.14.1",
 		"typescript-eslint-parser-for-extra-files": "^0.7.0",
-		"vite-plugin-eslint4b": "^0.4.0"
+		"vite-plugin-eslint4b": "^0.4.6"
 	},
 	"dependencies": {
 		"@ota-meshi/site-kit-monaco-editor-svelte": "^0.1.0",
 		"assert": "^2.0.0",
-		"eslint": "~8.57.0",
+		"eslint": "~9.6.0",
 		"eslint-plugin-promise": "~6.4.0"
 	}
 }

@@ -5,7 +5,7 @@
 	import { deserializeState, serializeState } from '../eslint/scripts/state';
 	import { DEFAULT_RULES_CONFIG, getRule, linterStore } from '../eslint/scripts/linter.js';
 	import type { RulesConfig } from '../eslint/scripts/types';
-	$: linter = $linterStore;
+	$: ({ linter, plugins } = $linterStore);
 
 	const DEFAULT_CODE = `/* Welcome to eslint-plugin-promise */
 
@@ -25,8 +25,8 @@ something.then((val) => {
 	let rules = state.rules || Object.assign({}, DEFAULT_RULES_CONFIG);
 	let messages: Linter.LintMessage[] = [];
 	let time = '';
-	let options = {
-		filename: 'example.svelte'
+	const options = {
+		filename: 'example.js'
 	};
 	let editor: ESLintEditor | null = null;
 
@@ -105,15 +105,13 @@ something.then((val) => {
 				{linter}
 				bind:code
 				config={{
-					parserOptions: {
+					files: ['**/*.*'],
+					languageOptions: {
 						ecmaVersion: 'latest',
 						sourceType: 'module'
 					},
 					rules,
-					env: {
-						browser: true,
-						es2021: true
-					}
+					plugins
 				}}
 				{options}
 				on:result={onLintedResult}
