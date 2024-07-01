@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Linter } from 'eslint';
+	import { builtinRules } from 'eslint/use-at-your-own-risk';
 	import MonacoEditor, { type SourceLocation } from '@ota-meshi/site-kit-monaco-editor-svelte';
 	import { loadMonacoEditor } from '@ota-meshi/site-kit-monaco-editor';
 	import type {
@@ -15,7 +16,7 @@
 
 	export let linter: MaybePromise<Linter> | null = null;
 	export let code = '';
-	export let config: Linter.Config = {};
+	export let config: Linter.FlatConfig = {};
 	export let options: Linter.LintOptions = {};
 	export let fix = true;
 	export let showDiff = true;
@@ -25,7 +26,7 @@
 	let leftMarkers: MEditor.IMarkerData[] = [];
 	let rightMarkers: MEditor.IMarkerData[] = [];
 
-	let messageMap = new Map<string, Linter.LintMessage>();
+	const messageMap = new Map<string, Linter.LintMessage>();
 	let editor: MonacoEditor | null = null;
 
 	export function setCursorPosition(loc: SourceLocation): void {
@@ -51,7 +52,7 @@
 	async function lint(
 		linter: MaybePromise<Linter> | null,
 		code: MaybePromise<string>,
-		config: Linter.Config,
+		config: Linter.FlatConfig,
 		options: Linter.LintOptions
 	) {
 		messageMap.clear();
@@ -73,12 +74,12 @@
 				throw new Error();
 			};
 		}
-		const messages = linter.verify(code, config, options);
+		const messages = linter.verify(code, [config], options);
 		const time = Date.now() - start;
 
 		dispatch('time', time);
 
-		const fixResult = linter.verifyAndFix(code, config, options);
+		const fixResult = linter.verifyAndFix(code, [config], options);
 		fixedValue = fixResult.output;
 
 		dispatch('result', {
@@ -110,7 +111,7 @@
 		messageMap?: Map<string, Linter.LintMessage>
 	) {
 		const monaco: Monaco = await loadMonacoEditor();
-		const rule = message.ruleId && (await linter)!.getRules().get(message.ruleId);
+		const rule = message.ruleId && builtinRules.get(message.ruleId);
 		const docUrl = rule && rule.meta && rule.meta.docs && rule.meta.docs.url;
 		const startLineNumber = ensurePositiveInt(message.line, 1);
 		const startColumn = ensurePositiveInt(message.column, 1);
@@ -120,7 +121,7 @@
 			? {
 					value: message.ruleId!,
 					// Type bug in monaco-editor?
-					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- ignore
+
 					target: docUrl as any
 				}
 			: message.ruleId || 'FATAL';

@@ -1,4 +1,5 @@
 import { Linter } from 'eslint';
+import { builtinRules } from 'eslint/use-at-your-own-risk';
 // @ts-expect-error -- Demo
 import bundlePlugin from 'eslint-plugin-promise';
 import type { RulesConfig } from './types';
@@ -38,7 +39,7 @@ const CORE_CATEGORIES: Category[] = [
 	}
 ];
 
-for (const [ruleId, rule] of new Linter().getRules()) {
+for (const [ruleId, rule] of builtinRules) {
 	if (rule.meta!.deprecated) {
 		continue;
 	}
@@ -58,7 +59,7 @@ for (const [ruleId, rule] of new Linter().getRules()) {
 
 export let categories: Category[] = [...CORE_CATEGORIES];
 export const categoriesStore = writable(categories);
-export const linterStore = writable(new Linter());
+export const linterStore = writable({ linter: new Linter(), plugins: {} as Record<string, any> });
 const pluginCategories: Category[] = [];
 
 setupPlugin(bundlePlugin);
@@ -73,6 +74,7 @@ function getNamespace(pluginName: string) {
 	return res && res[1] + res[2];
 }
 
+// eslint-disable-next-line complexity -- ignore
 export function setupPlugin(
 	plugin: any = bundlePlugin,
 	pluginName = 'eslint-plugin-promise'
@@ -122,14 +124,10 @@ export function setupPlugin(
 	categoriesStore.set(categories);
 
 	const linter = new Linter();
-
-	for (const ruleName in plugin.rules) {
-		const rule = plugin.rules[ruleName];
-		const ruleId = `${ns}/${ruleName}`;
-		linter.defineRule(ruleId, rule);
-	}
-
-	linterStore.set(linter);
+	linterStore.set({
+		linter,
+		plugins: Object.fromEntries([[pluginName.replace(/^eslint-plugin-/u, ''), plugin]])
+	});
 }
 
 /** Get rule data */
