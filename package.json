@@ -51,7 +51,7 @@
 		"pkg-versions": "^4.0.0",
 		"prettier": "^3.0.0",
 		"prettier-plugin-svelte": "^3.0.0",
-		"svelte": "^4.0.0",
+		"svelte": "^5.0.0",
 		"svelte-adapter-ghpages": "^0.2.0",
 		"svelte-check": "^4.0.0",
 		"svelte-preprocess": "^6.0.0",
