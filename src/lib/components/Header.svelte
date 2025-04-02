@@ -45,14 +45,14 @@
 		</p>
 	</div>
 	<div class="packages-info">
-		{#each Object.keys(packages) as nm}
+		{#each Object.keys(packages) as nm (nm)}
 			{@const pkg = packages[nm]}
 			{#if nm === 'eslint-plugin-promise'}
 				<div class="package-item">
 					<a href={pkg.homepage} target="_blank" rel="noopener noreferrer">{pkg.name}</a>@<select
 						bind:value={pluginVersion}
 					>
-						{#each versions as v}
+						{#each versions as v (v)}
 							<option value={v}>
 								{v}
 							</option>

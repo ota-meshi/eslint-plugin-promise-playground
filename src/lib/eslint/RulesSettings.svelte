@@ -14,10 +14,7 @@
 				// eslint-disable-next-line no-loop-func -- ignore
 				filteredRules = filteredRules.filter((r) => r.ruleId.includes(filterValue));
 			}
-			filteredCategories.push({
-				...category,
-				rules: filteredRules
-			});
+			filteredCategories.push({ ...category, rules: filteredRules });
 		}
 	}
 	categoriesStore.subscribe((categories) => {
@@ -33,12 +30,7 @@
 	});
 	let categoryState = Object.fromEntries(
 		$categoriesStore.map((c) => {
-			return [
-				c.title,
-				{
-					close: true
-				}
-			];
+			return [c.title, { close: true }];
 		})
 	);
 
@@ -118,16 +110,12 @@
 							categoryState = Object.fromEntries(
 								$categoriesStore.map((c) => {
 									const close = categoryState[c.title].close;
-									return [
-										c.title,
-										{
-											close: category.title === c.title ? !close : close
-										}
-									];
+									return [c.title, { close: category.title === c.title ? !close : close }];
 								})
 							);
 						}}
 						type="button"
+						aria-label="Toggle {category.type} Category"
 					>
 						<svg xmlns="http://www.w3.org/2000/svg" height="10" viewBox="0 0 10 10" width="10">
 							<path d="M2.5 10l5-5-5-5v10z" fill="#ddd" />
@@ -158,7 +146,11 @@
 										/>
 										{rule.ruleId}
 									</label>
-									<a href={rule.url} target="_blank" rel="noopener noreferrer"
+									<a
+										href={rule.url}
+										target="_blank"
+										rel="noopener noreferrer"
+										aria-label="Open {rule.ruleId} documentation"
 										><svg
 											xmlns="http://www.w3.org/2000/svg"
 											aria-hidden="true"
