@@ -29,7 +29,7 @@
 		} else {
 			const url = `https://cdn.skypack.dev/eslint-plugin-promise@${pluginVersion}`;
 			void import(/* @vite-ignore */ url).then((module) => {
-				setupPlugin(module);
+				setupPlugin(module.default || module);
 			});
 		}
 	}
